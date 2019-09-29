@@ -6,4 +6,5 @@ data class User(val id:Int=-1,
                 var type:String="",
                 var blocked:Boolean=false,
                 var photoUrl:String="",
-                var shiftActive:Boolean=false)
+                var shiftActive:Boolean=false,
+                var token:String="")

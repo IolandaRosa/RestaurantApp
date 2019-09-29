@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.example.myrestaurantapp.R
 import com.example.myrestaurantapp.helpers.APIConstants
 import services.AsyncTaskLoginPost
+import services.AsyncTaskResponseGet
+import services.AsyncTaskResponseGetAuth
 import services.OnUpdateListener
 import viewModels.LoginViewModel
 
@@ -17,6 +20,7 @@ class LoginActivity : AppCompatActivity() {
         val LOGIN_POST_URL_USERNAME = APIConstants.baseUrl + APIConstants.postLoginUsername
         val LOGIN_POST_URL_EMAIL = APIConstants.baseUrl + APIConstants.postLoginEmail
         val TAG = "LoginActivity"
+        val GET_USER_USER = APIConstants.baseUrl + APIConstants.getUserMe
     }
 
     private lateinit var usernameTextView: EditText
@@ -25,7 +29,8 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginViewModel: LoginViewModel
 
-    private lateinit var myTask: AsyncTaskLoginPost
+    private lateinit var loginTask: AsyncTaskLoginPost
+    private lateinit var userTask: AsyncTaskResponseGetAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
             )
 
             if (jsonObject != null) {
-                myTask = AsyncTaskLoginPost(jsonObject)
+                loginTask = AsyncTaskLoginPost(jsonObject)
 
                 performLogin()
 
@@ -54,13 +59,24 @@ class LoginActivity : AppCompatActivity() {
 
     fun performLogin() {
 
-        myTask.setUpdateListener(object : OnUpdateListener {
+        loginTask.setUpdateListener(object : OnUpdateListener {
             override fun onUpdate(jsonResponse: String) {
 
-                //guardar o token na store e pedir as informações do utilizador
+                if(jsonResponse.isNullOrEmpty()){
+                    Toast.makeText(this@LoginActivity, "Invalid Credentials", Toast.LENGTH_LONG).show()
+                    return
+                }
 
-                Log.d(TAG, jsonResponse)
-                //guardar token e fazer update da UI
+                //guardar o token na store e pedir as informações do utilizador
+                val token = loginViewModel.getJsonToken(jsonResponse)
+
+                if(token!=null){
+                    saveUserToken(token)
+
+                    getUserInformation(token)
+                }
+
+                Log.d(TAG, token!!)
             }
         })
 
@@ -70,6 +86,23 @@ class LoginActivity : AppCompatActivity() {
             LOGIN_POST_URL_USERNAME
         }
 
-        myTask.execute(loginUrl)
+        loginTask.execute(loginUrl)
+    }
+
+    fun getUserInformation(token:String){
+        userTask= AsyncTaskResponseGetAuth(token)
+
+        userTask.setUpdateListener(object : OnUpdateListener{
+            override fun onUpdate(jsonResponse: String) {
+                Log.d(TAG, jsonResponse)
+            }
+        })
+
+        userTask.execute(GET_USER_USER)
+    }
+
+    fun saveUserToken(token:String){
+        //guardar token nas shared preferences
+        loginViewModel.saveUserToken(token, this)
     }
 }

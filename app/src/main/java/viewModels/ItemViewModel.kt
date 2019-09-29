@@ -3,14 +3,14 @@ package viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.example.myrestaurantapp.models.Item
-import repositorys.ItemRepository
+import repositorys.Repository
 
 class ItemViewModel(application: Application):AndroidViewModel(application) {
 
-    var itemsRepository: ItemRepository? = null
+    var itemsRepository: Repository? = null
 
     init {
-        itemsRepository = ItemRepository()
+        itemsRepository = Repository()
     }
 
     fun getAllItems(jsonResponse:String):MutableList<Item>{

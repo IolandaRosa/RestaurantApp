@@ -6,4 +6,5 @@ object APIConstants {
     val imageItemURL:String="http://abcb0c1e.ngrok.io/storage/items/"
     val postLoginUsername:String="loginUsername"
     val postLoginEmail:String="login"
+    val getUserMe:String="users/me"
 }

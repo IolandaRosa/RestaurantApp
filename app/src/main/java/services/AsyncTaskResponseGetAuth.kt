@@ -2,42 +2,30 @@ package services
 
 import android.os.AsyncTask
 import android.util.Log
-import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 
-class AsyncTaskLoginPost(var data:JSONObject): AsyncTask<String,Integer,String> (){
+class AsyncTaskResponseGetAuth(val token:String) : AsyncTask<String, Integer, String>() {
 
     private lateinit var listener: OnUpdateListener
 
     override fun doInBackground(vararg urlString: String?): String {
-        var result=""
-
+        var result = ""
         var connection: HttpURLConnection? = null
         var stream: InputStream? = null
         var reader: BufferedReader? = null
 
         try {
-
-            //init post connection
+            //Iniciar a conexão
             val url = URL(urlString[0])
             connection = url.openConnection() as HttpURLConnection
-            connection.setRequestProperty("Content-Type", "application/json")
-            connection.requestMethod="POST"
-            connection.doOutput=true
-            connection.doInput=true
-
-            //Enviar o corpo do post JSON Object
-            val writer = OutputStreamWriter(connection.outputStream)
-            writer.write(data.toString())
-            writer.flush()
+            connection.requestMethod="GET"
+            connection.setRequestProperty("Authorization", "Bearer $token")
 
             connection.connect()
-
 
             val responseCode: Int = connection.responseCode
 
@@ -45,7 +33,7 @@ class AsyncTaskLoginPost(var data:JSONObject): AsyncTask<String,Integer,String> 
                 //Ler resposta
                 stream = connection.inputStream
 
-                reader = BufferedReader(InputStreamReader(stream))
+                reader = BufferedReader(InputStreamReader(stream, "iso-8859-1"), 8)
 
                 var tempStr: String?
 
@@ -70,12 +58,14 @@ class AsyncTaskLoginPost(var data:JSONObject): AsyncTask<String,Integer,String> 
             reader?.close()
             stream?.close()
             connection?.disconnect()
-            return result
         }
+
+        return result
     }
 
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
+
         if (result != null) {
             listener.onUpdate(result)
         }
@@ -84,4 +74,5 @@ class AsyncTaskLoginPost(var data:JSONObject): AsyncTask<String,Integer,String> 
     fun setUpdateListener(listener: OnUpdateListener) {
         this.listener = listener
     }
+
 }

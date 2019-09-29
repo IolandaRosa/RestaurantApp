@@ -1,31 +1,37 @@
 package viewModels
 
 import android.app.Application
+import android.content.Context
+import android.util.JsonReader
 import androidx.lifecycle.AndroidViewModel
 import org.json.JSONObject
+import repositorys.Repository
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     var isEmail=false
+    var loginRepository: Repository? = null
+
+    init {
+        loginRepository = Repository()
+    }
+
 
     fun validateData(username: String?, password: String?): JSONObject? {
 
-        if (username.isNullOrEmpty() || password.isNullOrEmpty()) {
-            return null
-        }
-
-        val jsonObject = JSONObject()
-
         if (android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()) {
-            jsonObject.put("email", username)
             isEmail=true
-        } else {
-            jsonObject.put("username", username)
         }
 
-        jsonObject.put("password", password)
+        return loginRepository?.validateData(username, password)
 
-        return jsonObject
+    }
 
+    fun getJsonToken(jsonResponse: String):String?{
+        return loginRepository?.getJsonToken(jsonResponse)
+    }
+
+    fun saveUserToken(token:String, context: Context) {
+        loginRepository?.saveUserToken(token, context)
     }
 }

@@ -8,7 +8,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class AsyncTaskItems : AsyncTask<String, Integer, String>() {
+class AsyncTaskResponseGet : AsyncTask<String, Integer, String>() {
 
     private lateinit var listener: OnUpdateListener
 
