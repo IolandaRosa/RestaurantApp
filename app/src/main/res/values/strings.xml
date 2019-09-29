@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MyRestaurantApp</string>
+    <string name="waitItems">Loading restaurant items list...</string>
 </resources>

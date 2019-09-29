@@ -1,17 +1,22 @@
 package com.example.myrestaurantapp
 
+import adapter.ItemsAdapter
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import helpers.APIConstants
-import kotlinx.coroutines.*
 import services.AsyncTaskItems
 import services.OnUpdateListener
 import viewModels.ItemViewModel
 import models.Item
-import kotlin.coroutines.CoroutineContext
 
 class MainActivity: AppCompatActivity() {
 
@@ -21,12 +26,11 @@ class MainActivity: AppCompatActivity() {
     }
 
     private lateinit var itemViewModel: ItemViewModel
-
     private lateinit var myTask: AsyncTaskItems
-
-    private lateinit var myTextView:TextView
-
     private var items:MutableList<Item> = mutableListOf()
+    private lateinit var waitLayout: LinearLayout
+    private lateinit var itemsRecyclerView: RecyclerView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -35,7 +39,10 @@ class MainActivity: AppCompatActivity() {
 
         itemViewModel = ViewModelProviders.of(this).get(ItemViewModel::class.java)
         myTask = AsyncTaskItems()
-        myTextView = findViewById(R.id.myTextView)
+        waitLayout = findViewById(R.id.waitItemsLinearLayout)
+        itemsRecyclerView = findViewById(R.id.itemsRecyclerView)
+
+        waitLayout.visibility = View.VISIBLE
 
         setupGetItemsTask()
 
@@ -45,6 +52,7 @@ class MainActivity: AppCompatActivity() {
         myTask.setUpdateListener(object : OnUpdateListener {
             override fun onUpdate(jsonResponse: String) {
                 try {
+
                     items = itemViewModel.getAllItems(jsonResponse)
 
                     updateUiView()
@@ -60,6 +68,10 @@ class MainActivity: AppCompatActivity() {
     }
 
     fun updateUiView(){
-        myTextView.text = items[0].description
+        waitLayout.visibility = View.GONE
+
+        itemsRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        itemsRecyclerView.adapter = ItemsAdapter(items, this)
     }
 }
