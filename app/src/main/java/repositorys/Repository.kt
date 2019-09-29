@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import android.util.Log
 import com.example.myrestaurantapp.helpers.JsonConvertersSingleton
 import com.example.myrestaurantapp.models.Item
+import com.example.myrestaurantapp.models.User
 import org.json.JSONObject
 
 class Repository {
@@ -14,6 +15,7 @@ class Repository {
     companion object{
         val TOKEN_KEY = "token"
         val SHARED_PREFERENCE_NAME="RestaurantAppSharedPreference"
+        val TAG = "Repository"
     }
 
 
@@ -32,7 +34,7 @@ class Repository {
             }
 
         } catch (e: Exception) {
-            Log.d("TAG", e.message)
+            Log.d(TAG, e.message)
         } finally {
             return items
         }
@@ -64,7 +66,7 @@ class Repository {
             token = response.getString("access_token")
 
         } catch (e: Exception) {
-            Log.d("TAG", e.message)
+            Log.d(TAG, e.message)
         } finally {
             return token
         }
@@ -80,6 +82,26 @@ class Repository {
     fun getUserToken(context: Context):String? {
         sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
         return sharedPreferences.getString(TOKEN_KEY,"")
+    }
+
+    fun setUserInfo(jsonResponse: String, token: String): User? {
+
+        var user:User?=null
+
+        try {
+            val response = JSONObject(jsonResponse)
+
+            val jsonUser = response.getJSONObject("data")
+
+            user = JsonConvertersSingleton.jsonObjectToUser(jsonUser)
+
+            user?.token=token
+
+        } catch (e: Exception) {
+            Log.d(TAG, e.message)
+        } finally {
+            return user
+        }
     }
 
 }

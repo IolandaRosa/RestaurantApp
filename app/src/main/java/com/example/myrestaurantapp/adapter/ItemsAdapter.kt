@@ -31,7 +31,7 @@ class ItemsAdapter(var items: MutableList<Item>, val activity: MainActivity) :
         holder.nameTextView.text = item.name
         holder.priceTextView.text = "${item.price} €"
         holder.typeTextView.text = item.type
-        Glide.with(activity).load(APIConstants.imageItemURL+item.photo_url).into(holder.photoImageView);
+        Glide.with(activity).load(APIConstants.imageItemURL+item.photo_url).into(holder.photoImageView)
     }
 
 

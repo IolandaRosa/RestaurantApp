@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.util.JsonReader
 import androidx.lifecycle.AndroidViewModel
+import com.example.myrestaurantapp.models.User
 import org.json.JSONObject
 import repositorys.Repository
 
@@ -33,5 +34,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     fun saveUserToken(token:String, context: Context) {
         loginRepository?.saveUserToken(token, context)
+    }
+
+    fun setUserInfo(jsonResponse: String, token:String): User? {
+        return loginRepository?.setUserInfo(jsonResponse, token)
     }
 }

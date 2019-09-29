@@ -1,5 +1,6 @@
 package com.example.myrestaurantapp.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +17,9 @@ import com.example.myrestaurantapp.R
 import com.example.myrestaurantapp.adapter.ItemsAdapter
 import com.example.myrestaurantapp.helpers.APIConstants
 import com.example.myrestaurantapp.models.Item
+import com.example.myrestaurantapp.models.User
 import services.AsyncTaskResponseGet
+import services.AsyncTaskResponseGetAuth
 import services.OnUpdateListener
 import viewModels.ItemViewModel
 
@@ -25,14 +29,18 @@ class MainActivity : AppCompatActivity() {
         val GET_ITEMS_URL = APIConstants.baseUrl + APIConstants.getItemsURL
         val TAG = "MainActivity"
         val LOGIN_ACTIVITY_RESULT_CODE = 1
+        val INTENT_USER_KEY = "user"
+        val LOGOUT_URL = APIConstants.baseUrl + APIConstants.logoutUrl
     }
 
     private lateinit var itemViewModel: ItemViewModel
-    private lateinit var myTask: AsyncTaskResponseGet
+    private lateinit var itemsTask: AsyncTaskResponseGet
     private var items: MutableList<Item> = mutableListOf()
     private lateinit var waitLayout: LinearLayout
     private lateinit var itemsRecyclerView: RecyclerView
-
+    private var user: User? = null
+    private lateinit var menu: Menu
+    private lateinit var logoutTask:AsyncTaskResponseGetAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -40,7 +48,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         itemViewModel = ViewModelProviders.of(this).get(ItemViewModel::class.java)
-        myTask = AsyncTaskResponseGet()
+        itemsTask = AsyncTaskResponseGet()
+
         waitLayout = findViewById(R.id.waitItemsLinearLayout)
         itemsRecyclerView = findViewById(R.id.itemsRecyclerView)
 
@@ -51,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setupGetItemsTask() {
-        myTask.setUpdateListener(object : OnUpdateListener {
+        itemsTask.setUpdateListener(object : OnUpdateListener {
             override fun onUpdate(jsonResponse: String) {
                 try {
 
@@ -65,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        myTask.execute(GET_ITEMS_URL)
+        itemsTask.execute(GET_ITEMS_URL)
     }
 
     fun updateUiView() {
@@ -79,6 +88,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.main_menu, menu)
+        this.menu = menu!!
         return true
 
     }
@@ -90,6 +100,10 @@ class MainActivity : AppCompatActivity() {
                 return true
             R.id.action_login ->
                 startLoginActivity()
+            R.id.action_logout ->
+                logout()
+            R.id.action_profile->
+                loadProfile()
         }
 
         return true
@@ -99,5 +113,63 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java)
 
         startActivityForResult(intent, LOGIN_ACTIVITY_RESULT_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == LOGIN_ACTIVITY_RESULT_CODE && resultCode == Activity.RESULT_OK) {
+
+            user = data?.getSerializableExtra(INTENT_USER_KEY) as User
+
+            //alterar vista para user logado
+            setupLogedUserUI()
+        }
+    }
+
+    fun setupLogedUserUI() {
+        updateMenuInfo()
+    }
+
+    private fun updateMenuInfo(){
+
+        if(user!=null){
+            //index do login
+            menu.getItem(1).isVisible = false
+            //My profile
+            menu.getItem(2).isVisible = true
+            //logout
+            menu.getItem(3).isVisible = true
+        }
+        else{
+            menu.getItem(1).isVisible = true
+            menu.getItem(2).isVisible = false
+            menu.getItem(3).isVisible = false
+        }
+
+    }
+
+    private fun logout(){
+        //fazer pedido a api
+        if(user!=null){
+            logoutTask= AsyncTaskResponseGetAuth(user!!.token)
+            logoutTask.setUpdateListener(object : OnUpdateListener{
+                override fun onUpdate(jsonResponse: String) {
+                    Toast.makeText(this@MainActivity, "User logged out",Toast.LENGTH_SHORT).show()
+                    user=null
+                    updateMenuInfo()
+                }
+            })
+
+            logoutTask.execute(LOGOUT_URL)
+        }
+    }
+
+    private fun loadProfile(){
+        val intent = Intent(this, MyProfileActivity::class.java)
+
+        val bundle = Bundle()
+        bundle.putSerializable(INTENT_USER_KEY, user)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 }

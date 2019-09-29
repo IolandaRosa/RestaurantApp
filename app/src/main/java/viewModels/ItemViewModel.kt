@@ -3,6 +3,7 @@ package viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.example.myrestaurantapp.models.Item
+import com.example.myrestaurantapp.models.User
 import repositorys.Repository
 
 class ItemViewModel(application: Application):AndroidViewModel(application) {

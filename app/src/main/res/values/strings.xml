@@ -6,4 +6,6 @@
     <string name="signIn">Sign in</string>
     <string name="UsernameEmail">Username:</string>
     <string name="password">Password:</string>
+    <string name="menu_Logout">Logout</string>
+    <string name="menu_MyProfile">My profile</string>
 </resources>

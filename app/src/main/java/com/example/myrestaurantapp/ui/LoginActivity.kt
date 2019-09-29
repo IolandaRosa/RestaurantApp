@@ -1,5 +1,7 @@
 package com.example.myrestaurantapp.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -9,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.example.myrestaurantapp.R
 import com.example.myrestaurantapp.helpers.APIConstants
+import com.example.myrestaurantapp.models.User
 import services.AsyncTaskLoginPost
-import services.AsyncTaskResponseGet
 import services.AsyncTaskResponseGetAuth
 import services.OnUpdateListener
 import viewModels.LoginViewModel
@@ -31,6 +33,8 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginTask: AsyncTaskLoginPost
     private lateinit var userTask: AsyncTaskResponseGetAuth
+
+    private var user: User?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,15 +66,16 @@ class LoginActivity : AppCompatActivity() {
         loginTask.setUpdateListener(object : OnUpdateListener {
             override fun onUpdate(jsonResponse: String) {
 
-                if(jsonResponse.isNullOrEmpty()){
-                    Toast.makeText(this@LoginActivity, "Invalid Credentials", Toast.LENGTH_LONG).show()
+                if (jsonResponse.isNullOrEmpty()) {
+                    Toast.makeText(this@LoginActivity, "Invalid Credentials", Toast.LENGTH_LONG)
+                        .show()
                     return
                 }
 
                 //guardar o token na store e pedir as informações do utilizador
                 val token = loginViewModel.getJsonToken(jsonResponse)
 
-                if(token!=null){
+                if (token != null) {
                     saveUserToken(token)
 
                     getUserInformation(token)
@@ -89,19 +94,27 @@ class LoginActivity : AppCompatActivity() {
         loginTask.execute(loginUrl)
     }
 
-    fun getUserInformation(token:String){
-        userTask= AsyncTaskResponseGetAuth(token)
+    fun getUserInformation(token: String) {
+        userTask = AsyncTaskResponseGetAuth(token)
 
-        userTask.setUpdateListener(object : OnUpdateListener{
+        userTask.setUpdateListener(object : OnUpdateListener {
             override fun onUpdate(jsonResponse: String) {
-                Log.d(TAG, jsonResponse)
+                //Construir um novo user e enviar para main activity
+                user = loginViewModel.setUserInfo(jsonResponse, token)
+
+                val bundle = Bundle()
+                bundle.putSerializable(MainActivity.INTENT_USER_KEY, user)
+                val intent = Intent()
+                intent.putExtras(bundle)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
             }
         })
 
         userTask.execute(GET_USER_USER)
     }
 
-    fun saveUserToken(token:String){
+    fun saveUserToken(token: String) {
         //guardar token nas shared preferences
         loginViewModel.saveUserToken(token, this)
     }
