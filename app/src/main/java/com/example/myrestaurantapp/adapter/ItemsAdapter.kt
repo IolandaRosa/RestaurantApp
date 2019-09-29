@@ -1,16 +1,16 @@
-package adapter
+package com.example.myrestaurantapp.adapter
 
 import android.view.LayoutInflater
-import models.Item
+import com.example.myrestaurantapp.models.Item
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.myrestaurantapp.MainActivity
+import com.example.myrestaurantapp.ui.MainActivity
 import com.example.myrestaurantapp.R
-import helpers.APIConstants
+import com.example.myrestaurantapp.helpers.APIConstants
 
 class ItemsAdapter(var items: MutableList<Item>, val activity: MainActivity) :
     RecyclerView.Adapter<ItemsAdapter.ItemsViewHolder>() {

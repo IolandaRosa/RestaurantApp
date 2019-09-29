@@ -2,27 +2,42 @@ package services
 
 import android.os.AsyncTask
 import android.util.Log
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 
-class AsyncTaskItems : AsyncTask<String, Integer, String>() {
+class AsyncTaskLoginPost(var data:JSONObject): AsyncTask<String,Integer,String> (){
 
     private lateinit var listener: OnUpdateListener
 
     override fun doInBackground(vararg urlString: String?): String {
-        var result = ""
+        var result=""
+
         var connection: HttpURLConnection? = null
         var stream: InputStream? = null
         var reader: BufferedReader? = null
 
         try {
-            //Iniciar a conexão
+
+            //init post connection
             val url = URL(urlString[0])
             connection = url.openConnection() as HttpURLConnection
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.requestMethod="POST"
+            connection.doOutput=true
+            connection.doInput=true
+
+            //Enviar o corpo do post JSON Object
+            val writer = OutputStreamWriter(connection.outputStream)
+            writer.write(data.toString())
+            writer.flush()
+
             connection.connect()
+
 
             val responseCode: Int = connection.responseCode
 
@@ -30,7 +45,7 @@ class AsyncTaskItems : AsyncTask<String, Integer, String>() {
                 //Ler resposta
                 stream = connection.inputStream
 
-                reader = BufferedReader(InputStreamReader(stream, "iso-8859-1"), 8)
+                reader = BufferedReader(InputStreamReader(stream))
 
                 var tempStr: String?
 
@@ -62,7 +77,6 @@ class AsyncTaskItems : AsyncTask<String, Integer, String>() {
 
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
-
         if (result != null) {
             listener.onUpdate(result)
         }
@@ -71,9 +85,4 @@ class AsyncTaskItems : AsyncTask<String, Integer, String>() {
     fun setUpdateListener(listener: OnUpdateListener) {
         this.listener = listener
     }
-
-}
-
-interface OnUpdateListener {
-    fun onUpdate(jsonResponse: String)
 }

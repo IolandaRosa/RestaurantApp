@@ -1,8 +1,8 @@
 package repositorys
 
 import android.util.Log
-import helpers.JsonConvertersSingleton
-import models.Item
+import com.example.myrestaurantapp.helpers.JsonConvertersSingleton
+import com.example.myrestaurantapp.models.Item
 import org.json.JSONObject
 
 class ItemRepository {

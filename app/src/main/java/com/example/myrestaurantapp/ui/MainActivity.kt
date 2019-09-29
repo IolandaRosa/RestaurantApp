@@ -1,33 +1,34 @@
-package com.example.myrestaurantapp
+package com.example.myrestaurantapp.ui
 
-import adapter.ItemsAdapter
-import android.opengl.Visibility
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
+import com.example.myrestaurantapp.adapter.ItemsAdapter
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import helpers.APIConstants
+import com.example.myrestaurantapp.R
+import com.example.myrestaurantapp.helpers.APIConstants
+import com.example.myrestaurantapp.models.Item
 import services.AsyncTaskItems
 import services.OnUpdateListener
 import viewModels.ItemViewModel
-import models.Item
 
-class MainActivity: AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     companion object {
-        val GET_ITEMS_URL = APIConstants.baseUrl+ APIConstants.getItemsURL
+        val GET_ITEMS_URL = APIConstants.baseUrl + APIConstants.getItemsURL
         val TAG = "MainActivity"
     }
 
     private lateinit var itemViewModel: ItemViewModel
     private lateinit var myTask: AsyncTaskItems
-    private var items:MutableList<Item> = mutableListOf()
+    private var items: MutableList<Item> = mutableListOf()
     private lateinit var waitLayout: LinearLayout
     private lateinit var itemsRecyclerView: RecyclerView
 
@@ -48,7 +49,7 @@ class MainActivity: AppCompatActivity() {
 
     }
 
-    fun setupGetItemsTask(){
+    fun setupGetItemsTask() {
         myTask.setUpdateListener(object : OnUpdateListener {
             override fun onUpdate(jsonResponse: String) {
                 try {
@@ -57,9 +58,8 @@ class MainActivity: AppCompatActivity() {
 
                     updateUiView()
 
-                }
-                catch (e:Exception){
-                    Log.d(TAG,e.message!!)
+                } catch (e: Exception) {
+                    Log.d(TAG, e.message!!)
                 }
             }
         })
@@ -67,11 +67,35 @@ class MainActivity: AppCompatActivity() {
         myTask.execute(GET_ITEMS_URL)
     }
 
-    fun updateUiView(){
+    fun updateUiView() {
         waitLayout.visibility = View.GONE
 
         itemsRecyclerView.layoutManager = LinearLayoutManager(this)
 
         itemsRecyclerView.adapter = ItemsAdapter(items, this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.action_home ->
+                return true
+            R.id.action_login ->
+                startLoginActivity()
+        }
+
+        return true
+    }
+
+    fun startLoginActivity(){
+        val intent = Intent(this,LoginActivity::class.java)
+        startActivity(intent)
     }
 }

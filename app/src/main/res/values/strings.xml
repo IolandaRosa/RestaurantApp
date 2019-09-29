@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">MyRestaurantApp</string>
-    <string name="waitItems">Loading restaurant items list...</string>
+    <string name="waitItems">Loading restaurant items list…</string>
+    <string name="menu_Login">Login</string>
+    <string name="menu_Home">Home</string>
+    <string name="signIn">Sign in</string>
+    <string name="UsernameEmail">Username:</string>
+    <string name="password">Password:</string>
 </resources>

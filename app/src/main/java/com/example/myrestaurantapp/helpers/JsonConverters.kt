@@ -1,6 +1,6 @@
-package helpers
+package com.example.myrestaurantapp.helpers
 
-import models.Item
+import com.example.myrestaurantapp.models.Item
 import org.json.JSONObject
 import java.lang.Exception
 

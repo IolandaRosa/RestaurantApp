@@ -1,4 +1,4 @@
-package models
+package com.example.myrestaurantapp.models
 
 data class Item (val id:Int=-1,
                  var name:String = "",

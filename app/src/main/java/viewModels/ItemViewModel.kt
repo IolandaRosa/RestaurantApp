@@ -2,7 +2,7 @@ package viewModels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import models.Item
+import com.example.myrestaurantapp.models.Item
 import repositorys.ItemRepository
 
 class ItemViewModel(application: Application):AndroidViewModel(application) {
