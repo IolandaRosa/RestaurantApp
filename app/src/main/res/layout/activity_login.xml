@@ -9,10 +9,10 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:padding="16dp">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textViewtitleSignIn"
@@ -25,8 +25,8 @@
             android:gravity="center"
             android:text="@string/signIn"
             android:textColor="@color/colorPrimaryDark"
-            android:textStyle="bold"
-            android:textSize="28sp" />
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/loginUserTextView"
@@ -79,8 +79,8 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="32dp"
             android:background="@color/colorPrimaryLight"
-            android:textColor="@android:color/white"
-            android:text="@string/signIn" />
+            android:text="@string/signIn"
+            android:textColor="@android:color/white" />
 
     </RelativeLayout>
 

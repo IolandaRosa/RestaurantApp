@@ -1,9 +1,9 @@
 package com.example.myrestaurantapp.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.myrestaurantapp.R
 import com.example.myrestaurantapp.helpers.APIConstants
@@ -36,7 +36,7 @@ class MyProfileActivity : AppCompatActivity() {
         setupUserInfo()
     }
 
-    fun setupUserInfo() {
+    private fun setupUserInfo() {
 
         nameTextView.text = user.name
         emailTextView.text = "Email: ${user.email}"
@@ -45,6 +45,6 @@ class MyProfileActivity : AppCompatActivity() {
         shiftTextView.text =
             if (user.shiftActive) "Shift State: Currently Working" else "Shift State: Not Working"
 
-        Glide.with(this).load(APIConstants.imageUserURL+user.photoUrl).into(photoImageView)
+        Glide.with(this).load(APIConstants.imageUserURL + user.photoUrl).into(photoImageView)
     }
 }

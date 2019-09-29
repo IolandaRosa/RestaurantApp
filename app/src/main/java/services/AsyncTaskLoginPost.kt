@@ -10,12 +10,12 @@ import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 
-class AsyncTaskLoginPost(var data:JSONObject): AsyncTask<String,Integer,String> (){
+class AsyncTaskLoginPost(private var data: JSONObject) : AsyncTask<String, Int, String>() {
 
     private lateinit var listener: OnUpdateListener
 
     override fun doInBackground(vararg urlString: String?): String {
-        var result=""
+        var result = ""
 
         var connection: HttpURLConnection? = null
         var stream: InputStream? = null
@@ -27,9 +27,9 @@ class AsyncTaskLoginPost(var data:JSONObject): AsyncTask<String,Integer,String> 
             val url = URL(urlString[0])
             connection = url.openConnection() as HttpURLConnection
             connection.setRequestProperty("Content-Type", "application/json")
-            connection.requestMethod="POST"
-            connection.doOutput=true
-            connection.doInput=true
+            connection.requestMethod = "POST"
+            connection.doOutput = true
+            connection.doInput = true
 
             //Enviar o corpo do post JSON Object
             val writer = OutputStreamWriter(connection.outputStream)
@@ -45,7 +45,7 @@ class AsyncTaskLoginPost(var data:JSONObject): AsyncTask<String,Integer,String> 
                 //Ler resposta
                 stream = connection.inputStream
 
-                reader = BufferedReader(InputStreamReader(stream))
+                reader = BufferedReader(InputStreamReader(stream!!))
 
                 var tempStr: String?
 
@@ -65,7 +65,7 @@ class AsyncTaskLoginPost(var data:JSONObject): AsyncTask<String,Integer,String> 
             }
 
         } catch (e: Exception) {
-            Log.d("MyAsyncTask", e.message)
+            Log.d("MyAsyncTask", e.message!!)
         } finally {
             reader?.close()
             stream?.close()

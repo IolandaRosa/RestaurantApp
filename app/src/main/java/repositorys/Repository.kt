@@ -2,7 +2,6 @@ package repositorys
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import android.util.Log
 import com.example.myrestaurantapp.helpers.JsonConvertersSingleton
 import com.example.myrestaurantapp.models.Item
@@ -10,12 +9,12 @@ import com.example.myrestaurantapp.models.User
 import org.json.JSONObject
 
 class Repository {
-    private lateinit var sharedPreferences:SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
-    companion object{
-        val TOKEN_KEY = "token"
-        val SHARED_PREFERENCE_NAME="RestaurantAppSharedPreference"
-        val TAG = "Repository"
+    companion object {
+        const val TOKEN_KEY = "token"
+        const val SHARED_PREFERENCE_NAME = "RestaurantAppSharedPreference"
+        const val TAG = "Repository"
     }
 
 
@@ -34,7 +33,7 @@ class Repository {
             }
 
         } catch (e: Exception) {
-            Log.d(TAG, e.message)
+            Log.d(TAG, e.message!!)
         } finally {
             return items
         }
@@ -66,27 +65,29 @@ class Repository {
             token = response.getString("access_token")
 
         } catch (e: Exception) {
-            Log.d(TAG, e.message)
+            Log.d(TAG, e.message!!)
         } finally {
             return token
         }
     }
 
-    fun saveUserToken(token: String, context:Context) {
-        sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
+    fun saveUserToken(token: String, context: Context) {
+        sharedPreferences =
+            context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putString(TOKEN_KEY,token)
+        editor.putString(TOKEN_KEY, token)
         editor.apply()
     }
 
-    fun getUserToken(context: Context):String? {
-        sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
-        return sharedPreferences.getString(TOKEN_KEY,"")
+    fun getUserToken(context: Context): String? {
+        sharedPreferences =
+            context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
+        return sharedPreferences.getString(TOKEN_KEY, "")
     }
 
     fun setUserInfo(jsonResponse: String, token: String): User? {
 
-        var user:User?=null
+        var user: User? = null
 
         try {
             val response = JSONObject(jsonResponse)
@@ -95,10 +96,10 @@ class Repository {
 
             user = JsonConvertersSingleton.jsonObjectToUser(jsonUser)
 
-            user?.token=token
+            user?.token = token
 
         } catch (e: Exception) {
-            Log.d(TAG, e.message)
+            Log.d(TAG, e.message!!)
         } finally {
             return user
         }

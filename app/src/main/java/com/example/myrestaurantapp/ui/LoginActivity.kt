@@ -19,10 +19,10 @@ import viewModels.LoginViewModel
 
 class LoginActivity : AppCompatActivity() {
     companion object {
-        val LOGIN_POST_URL_USERNAME = APIConstants.baseUrl + APIConstants.postLoginUsername
-        val LOGIN_POST_URL_EMAIL = APIConstants.baseUrl + APIConstants.postLoginEmail
-        val TAG = "LoginActivity"
-        val GET_USER_USER = APIConstants.baseUrl + APIConstants.getUserMe
+        const val LOGIN_POST_URL_USERNAME = APIConstants.baseUrl + APIConstants.postLoginUsername
+        const val LOGIN_POST_URL_EMAIL = APIConstants.baseUrl + APIConstants.postLoginEmail
+        const val TAG = "LoginActivity"
+        const val GET_USER_USER = APIConstants.baseUrl + APIConstants.getUserMe
     }
 
     private lateinit var usernameTextView: EditText
@@ -61,12 +61,12 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun performLogin() {
+    private fun performLogin() {
 
         loginTask.setUpdateListener(object : OnUpdateListener {
             override fun onUpdate(jsonResponse: String) {
 
-                if (jsonResponse.isNullOrEmpty()) {
+                if (jsonResponse.isEmpty()) {
                     Toast.makeText(this@LoginActivity, "Invalid Credentials", Toast.LENGTH_LONG)
                         .show()
                     return

@@ -1,12 +1,12 @@
 package com.example.myrestaurantapp.helpers
 
 object APIConstants {
-    val baseUrl: String = "http://abcb0c1e.ngrok.io/api/"
-    val getItemsURL: String = "items"
-    val imageItemURL: String = "http://abcb0c1e.ngrok.io/storage/items/"
-    val imageUserURL: String = "http://abcb0c1e.ngrok.io/storage/profiles/"
-    val postLoginUsername: String = "loginUsername"
-    val postLoginEmail: String = "login"
-    val getUserMe: String = "users/me"
-    val logoutUrl: String = "logout"
+    const val baseUrl: String = "http://abcb0c1e.ngrok.io/api/"
+    const val getItemsURL: String = "items"
+    const val imageItemURL: String = "http://abcb0c1e.ngrok.io/storage/items/"
+    const val imageUserURL: String = "http://abcb0c1e.ngrok.io/storage/profiles/"
+    const val postLoginUsername: String = "loginUsername"
+    const val postLoginEmail: String = "login"
+    const val getUserMe: String = "users/me"
+    const val logoutUrl: String = "logout"
 }

@@ -8,8 +8,8 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-open class AsyncTaskSuperGet(val isAuth: Boolean, open val token: String = "") :
-    AsyncTask<String, Integer, String>() {
+open class AsyncTaskSuperGet(private val isAuth: Boolean, open val token: String = "") :
+    AsyncTask<String, Int, String>() {
     private lateinit var listener: OnUpdateListener
 
     override fun doInBackground(vararg urlString: String?): String {
@@ -34,7 +34,7 @@ open class AsyncTaskSuperGet(val isAuth: Boolean, open val token: String = "") :
 
             if (responseCode == 200) {
                 //Ler resposta
-                stream = connection.inputStream
+                stream = connection.inputStream!!
 
                 reader = BufferedReader(InputStreamReader(stream, "iso-8859-1"), 8)
 
@@ -56,7 +56,7 @@ open class AsyncTaskSuperGet(val isAuth: Boolean, open val token: String = "") :
             }
 
         } catch (e: Exception) {
-            Log.d("MyAsyncTask", e.message)
+            Log.d("MyAsyncTask", e.message!!)
         } finally {
             reader?.close()
             stream?.close()

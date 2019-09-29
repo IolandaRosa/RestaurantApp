@@ -26,11 +26,11 @@ import viewModels.ItemViewModel
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        val GET_ITEMS_URL = APIConstants.baseUrl + APIConstants.getItemsURL
-        val TAG = "MainActivity"
-        val LOGIN_ACTIVITY_RESULT_CODE = 1
-        val INTENT_USER_KEY = "user"
-        val LOGOUT_URL = APIConstants.baseUrl + APIConstants.logoutUrl
+        const val GET_ITEMS_URL = APIConstants.baseUrl + APIConstants.getItemsURL
+        const val TAG = "MainActivity"
+        const val LOGIN_ACTIVITY_RESULT_CODE = 1
+        const val INTENT_USER_KEY = "user"
+        const val LOGOUT_URL = APIConstants.baseUrl + APIConstants.logoutUrl
     }
 
     private lateinit var itemViewModel: ItemViewModel
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var itemsRecyclerView: RecyclerView
     private var user: User? = null
     private lateinit var menu: Menu
-    private lateinit var logoutTask:AsyncTaskResponseGetAuth
+    private lateinit var logoutTask: AsyncTaskResponseGetAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun setupGetItemsTask() {
+    private fun setupGetItemsTask() {
         itemsTask.setUpdateListener(object : OnUpdateListener {
             override fun onUpdate(jsonResponse: String) {
                 try {
@@ -102,14 +102,14 @@ class MainActivity : AppCompatActivity() {
                 startLoginActivity()
             R.id.action_logout ->
                 logout()
-            R.id.action_profile->
+            R.id.action_profile ->
                 loadProfile()
         }
 
         return true
     }
 
-    fun startLoginActivity() {
+    private fun startLoginActivity() {
         val intent = Intent(this, LoginActivity::class.java)
 
         startActivityForResult(intent, LOGIN_ACTIVITY_RESULT_CODE)
@@ -126,21 +126,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setupLogedUserUI() {
+    private fun setupLogedUserUI() {
         updateMenuInfo()
     }
 
-    private fun updateMenuInfo(){
+    private fun updateMenuInfo() {
 
-        if(user!=null){
+        if (user != null) {
             //index do login
             menu.getItem(1).isVisible = false
             //My profile
             menu.getItem(2).isVisible = true
             //logout
             menu.getItem(3).isVisible = true
-        }
-        else{
+        } else {
             menu.getItem(1).isVisible = true
             menu.getItem(2).isVisible = false
             menu.getItem(3).isVisible = false
@@ -148,14 +147,14 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun logout(){
+    private fun logout() {
         //fazer pedido a api
-        if(user!=null){
-            logoutTask= AsyncTaskResponseGetAuth(user!!.token)
-            logoutTask.setUpdateListener(object : OnUpdateListener{
+        if (user != null) {
+            logoutTask = AsyncTaskResponseGetAuth(user!!.token)
+            logoutTask.setUpdateListener(object : OnUpdateListener {
                 override fun onUpdate(jsonResponse: String) {
-                    Toast.makeText(this@MainActivity, "User logged out",Toast.LENGTH_SHORT).show()
-                    user=null
+                    Toast.makeText(this@MainActivity, "User logged out", Toast.LENGTH_SHORT).show()
+                    user = null
                     updateMenuInfo()
                 }
             })
@@ -164,7 +163,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadProfile(){
+    private fun loadProfile() {
         val intent = Intent(this, MyProfileActivity::class.java)
 
         val bundle = Bundle()
