@@ -15,7 +15,7 @@ import java.io.File
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     var isEmail = false
-    var loginRepository: Repository? = null
+    private var loginRepository: Repository? = null
 
     init {
         loginRepository = Repository()
@@ -60,7 +60,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         //verificar se foram feitas 5 tentativas em menos de 10 min
         val accessInfo = loginRepository?.getUnauthorizedAccessInfo(context, username)
 
-        if (accessInfo != null && accessInfo.count >= 1) {
+        if (accessInfo != null && accessInfo.count >= 5) {
 
             var timeDiff = accessInfo.timeFinal - accessInfo.timeInit
 

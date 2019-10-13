@@ -1,10 +1,10 @@
 package com.example.myrestaurantapp.helpers
 
 object APIConstants {
-    //private const val baseUrlAPI: String = "https://projetociberseguranca.azurewebsites.net/api/"
-    private const val baseUrlAPI: String = "http://e51ff16f.ngrok.io/api/"
-    //private const val baseUrlImages: String = "https://projetociberseguranca.azurewebsites.net/storage/"
-    private const val baseUrlImages: String = "http://e51ff16f.ngrok.io/storage/"
+    private const val baseUrlAPI: String = "https://projetociberseguranca.azurewebsites.net/api/"
+    //private const val baseUrlAPI: String = "http://e51ff16f.ngrok.io/api/"
+    private const val baseUrlImages: String = "https://projetociberseguranca.azurewebsites.net/storage/"
+    //private const val baseUrlImages: String = "http://e51ff16f.ngrok.io/storage/"
     const val getItemsURL: String = baseUrlAPI + "items"
     const val imageItemURL: String = baseUrlImages + "items/"
     const val imageUserURL: String = baseUrlImages + "profiles/"
