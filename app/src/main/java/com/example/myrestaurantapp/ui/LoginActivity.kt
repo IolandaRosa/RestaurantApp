@@ -13,6 +13,7 @@ import com.example.myrestaurantapp.R
 import com.example.myrestaurantapp.helpers.APIConstants
 import com.example.myrestaurantapp.models.User
 import org.json.JSONObject
+import services.AsyncTaskLogUnauthorizedPost
 import services.AsyncTaskLoginPost
 import services.AsyncTaskResponseGetAuth
 import services.OnUpdateListener
@@ -25,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
         const val TAG = "LoginActivity"
         const val GET_USER_USER = APIConstants.getUserMe
         const val UNAUTHORIZED = APIConstants.unauthorizedResult
+        const val UNAUTHORIZED_POST_URL = APIConstants.unauthorizedUrl
     }
 
     private lateinit var usernameTextView: EditText
@@ -35,8 +37,9 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var loginTask: AsyncTaskLoginPost
     private lateinit var userTask: AsyncTaskResponseGetAuth
+    private lateinit var unauthorizedTask: AsyncTaskLogUnauthorizedPost
 
-    private var user: User?=null
+    private var user: User? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,14 +73,24 @@ class LoginActivity : AppCompatActivity() {
 
                 //Quando a resposta vem vazia é porque algo correu mal ou houve excepção do lado do servidor
                 if (jsonResponse.isEmpty()) {
-                    loginViewModel.showErrorToast(this@LoginActivity,"Invalid Credentials")
+                    loginViewModel.showErrorToast(this@LoginActivity, "Invalid Credentials")
                     return
                 }
                 //Se a resposta for do tipo não autorizado
-                else if(jsonResponse == UNAUTHORIZED){
-                    loginViewModel.showErrorToast(this@LoginActivity,"Unauthorized Access")
+                else if (jsonResponse == UNAUTHORIZED) {
+                    loginViewModel.showErrorToast(this@LoginActivity, "Unauthorized Access")
 
-                    loginViewModel.handleUnauthorizedAccess(this@LoginActivity, jsonObject.getString("username"))
+                    val file = loginViewModel.handleUnauthorizedAccess(
+                        this@LoginActivity,
+                        jsonObject.getString("username")
+                    )
+
+                    if(file!=null){
+                        //Envia ficheiro para o servidor
+                        unauthorizedTask = AsyncTaskLogUnauthorizedPost(file)
+                        sendToServer()
+
+                    }
                     return
                 }
 
@@ -101,6 +114,16 @@ class LoginActivity : AppCompatActivity() {
         }
 
         loginTask.execute(loginUrl)
+    }
+
+    fun sendToServer(){
+        unauthorizedTask.setUpdateListener(object : OnUpdateListener{
+            override fun onUpdate(jsonResponse: String) {
+                loginViewModel.showErrorToast(this@LoginActivity,"Success")
+            }
+
+        })
+        unauthorizedTask.execute(UNAUTHORIZED_POST_URL)
     }
 
     fun getUserInformation(token: String) {

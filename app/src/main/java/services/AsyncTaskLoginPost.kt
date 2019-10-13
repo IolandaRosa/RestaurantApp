@@ -1,6 +1,5 @@
 package services
 
-import android.content.res.Resources
 import android.os.AsyncTask
 import android.util.Log
 import com.example.myrestaurantapp.helpers.APIConstants
@@ -64,8 +63,7 @@ class AsyncTaskLoginPost(private var data: JSONObject) : AsyncTask<String, Int, 
                 } catch (Ex: Exception) {
                     Log.e("e", "Error in convertToString " + Ex.printStackTrace())
                 }
-            }
-            else if(responseCode ==401){
+            } else if (responseCode == 401) {
                 //Ver se mensagem é de credenciais inválidas
                 result = APIConstants.unauthorizedResult
             }

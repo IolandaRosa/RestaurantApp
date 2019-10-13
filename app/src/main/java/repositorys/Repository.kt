@@ -8,6 +8,11 @@ import com.example.myrestaurantapp.models.Item
 import com.example.myrestaurantapp.models.UnauthorizedAcess
 import com.example.myrestaurantapp.models.User
 import org.json.JSONObject
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.text.SimpleDateFormat
+import java.util.*
 
 class Repository {
     private lateinit var sharedPreferences: SharedPreferences
@@ -109,53 +114,95 @@ class Repository {
         }
     }
 
-    fun saveUnauthorizedAccessInfo(context: Context, username:String) {
+    fun saveUnauthorizedAccessInfo(context: Context, username: String) {
         sharedPreferences =
             context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
 
         val editor = sharedPreferences.edit()
 
         //Se a sharedPreferencesJa não tem gravado info
-        if (!sharedPreferences.contains(username+UNAUTHORIZED_TIMEINITIAL_KEY)) {
-            editor.putLong(username+UNAUTHORIZED_TIMEINITIAL_KEY, System.currentTimeMillis())
-            editor.putInt(username+UNAUTHORIZED_COUNT_KEY, 0)
-        }
-        else {
+        if (!sharedPreferences.contains(username + UNAUTHORIZED_TIMEINITIAL_KEY)) {
+            editor.putLong(username + UNAUTHORIZED_TIMEINITIAL_KEY, System.currentTimeMillis())
+            editor.putInt(username + UNAUTHORIZED_COUNT_KEY, 0)
+        } else {
             //senão atualiza a info
-            var count = sharedPreferences.getInt(username+UNAUTHORIZED_COUNT_KEY, 0)
-            count+=1
-            editor.putInt(username+UNAUTHORIZED_COUNT_KEY, count)
-            editor.putLong(username+UNAUTHORIZED_TIMEFINAL_KEY, System.currentTimeMillis())
+            var count = sharedPreferences.getInt(username + UNAUTHORIZED_COUNT_KEY, 0)
+            count += 1
+            editor.putInt(username + UNAUTHORIZED_COUNT_KEY, count)
+            editor.putLong(username + UNAUTHORIZED_TIMEFINAL_KEY, System.currentTimeMillis())
         }
 
         editor.apply()
     }
 
-    fun getUnauthorizedAccessInfo(context: Context, username:String): UnauthorizedAcess {
+    fun getUnauthorizedAccessInfo(context: Context, username: String): UnauthorizedAcess {
 
         sharedPreferences =
             context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
 
-        val count = sharedPreferences.getInt(username+UNAUTHORIZED_COUNT_KEY, 0)
+        val count = sharedPreferences.getInt(username + UNAUTHORIZED_COUNT_KEY, 0)
 
-        val timeInit = sharedPreferences.getLong(username+UNAUTHORIZED_TIMEINITIAL_KEY, 0)
+        val timeInit = sharedPreferences.getLong(username + UNAUTHORIZED_TIMEINITIAL_KEY, 0)
 
-        val timeFinal = sharedPreferences.getLong(username+UNAUTHORIZED_TIMEFINAL_KEY,0)
+        val timeFinal = sharedPreferences.getLong(username + UNAUTHORIZED_TIMEFINAL_KEY, 0)
 
         return UnauthorizedAcess(count, timeInit, timeFinal)
     }
 
-    fun resetUnauthorizedAccessAttempts(context: Context, username:String){
+    fun resetUnauthorizedAccessAttempts(context: Context, username: String) {
         sharedPreferences =
             context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE)
 
         val editor = sharedPreferences.edit()
 
-        editor.remove(username+UNAUTHORIZED_COUNT_KEY)
-        editor.remove(username+UNAUTHORIZED_TIMEFINAL_KEY)
-        editor.remove(username+UNAUTHORIZED_TIMEINITIAL_KEY)
+        editor.remove(username + UNAUTHORIZED_COUNT_KEY)
+        editor.remove(username + UNAUTHORIZED_TIMEFINAL_KEY)
+        editor.remove(username + UNAUTHORIZED_TIMEINITIAL_KEY)
 
         editor.apply()
+    }
+
+    fun sendUnauthorizedAccessToServer(
+        context: Context,
+        username: String,
+        accessInfo: UnauthorizedAcess
+    ): File {
+
+        //Write a txt to send
+        val filePath = context.filesDir.path.toString() + "/logFile.txt"
+        val logFile = File(filePath)
+
+        if (!logFile.exists()) {
+            try {
+                logFile.createNewFile()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        val buffer = BufferedWriter(FileWriter(logFile))
+
+        val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val date = df.format(Date())
+
+
+        if (android.util.Patterns.EMAIL_ADDRESS.matcher(username).matches()) {
+            buffer.append("email: $username\n")
+        } else {
+            buffer.append("username: $username\n")
+        }
+
+        buffer.append(
+            "failedAttempts: ${accessInfo.count}\n" +
+                    "timeMillisInit: ${accessInfo.timeInit}\n" +
+                    "timeMillisFinal: ${accessInfo.timeFinal}\n" +
+                    "accessType: mobileDevice\n" +
+                    "date: $date"
+        )
+        buffer.newLine()
+        buffer.close()
+
+        return logFile
     }
 
 }

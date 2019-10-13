@@ -1,11 +1,7 @@
 package com.example.myrestaurantapp.ui
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -27,7 +23,6 @@ import services.AsyncTaskResponseGet
 import services.AsyncTaskResponseGetAuth
 import services.OnUpdateListener
 import viewModels.ItemViewModel
-import javax.xml.validation.Validator
 
 class MainActivity : AppCompatActivity() {
 
@@ -54,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         //Termina aplicação se não exitir a ligação wifi
-        if(!InternetValidator.checkInternetConnection(this)){
+        if (!InternetValidator.checkInternetConnection(this)) {
             InternetValidator.showErrorMessage(this, R.string.connectionError)
             return
         }
