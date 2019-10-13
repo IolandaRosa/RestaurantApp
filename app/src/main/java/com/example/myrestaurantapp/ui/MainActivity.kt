@@ -26,11 +26,11 @@ import viewModels.ItemViewModel
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        const val GET_ITEMS_URL = APIConstants.baseUrl + APIConstants.getItemsURL
+        const val GET_ITEMS_URL = APIConstants.getItemsURL
         const val TAG = "MainActivity"
         const val LOGIN_ACTIVITY_RESULT_CODE = 1
         const val INTENT_USER_KEY = "user"
-        const val LOGOUT_URL = APIConstants.baseUrl + APIConstants.logoutUrl
+        const val LOGOUT_URL = APIConstants.logoutUrl
     }
 
     private lateinit var itemViewModel: ItemViewModel

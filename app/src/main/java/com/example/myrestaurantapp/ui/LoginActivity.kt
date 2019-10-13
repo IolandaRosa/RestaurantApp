@@ -19,10 +19,10 @@ import viewModels.LoginViewModel
 
 class LoginActivity : AppCompatActivity() {
     companion object {
-        const val LOGIN_POST_URL_USERNAME = APIConstants.baseUrl + APIConstants.postLoginUsername
-        const val LOGIN_POST_URL_EMAIL = APIConstants.baseUrl + APIConstants.postLoginEmail
+        const val LOGIN_POST_URL_USERNAME = APIConstants.postLoginUsername
+        const val LOGIN_POST_URL_EMAIL = APIConstants.postLoginEmail
         const val TAG = "LoginActivity"
-        const val GET_USER_USER = APIConstants.baseUrl + APIConstants.getUserMe
+        const val GET_USER_USER = APIConstants.getUserMe
     }
 
     private lateinit var usernameTextView: EditText
