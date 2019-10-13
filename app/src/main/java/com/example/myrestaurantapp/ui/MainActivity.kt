@@ -1,7 +1,11 @@
 package com.example.myrestaurantapp.ui
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -16,12 +20,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myrestaurantapp.R
 import com.example.myrestaurantapp.adapter.ItemsAdapter
 import com.example.myrestaurantapp.helpers.APIConstants
+import com.example.myrestaurantapp.helpers.InternetValidator
 import com.example.myrestaurantapp.models.Item
 import com.example.myrestaurantapp.models.User
 import services.AsyncTaskResponseGet
 import services.AsyncTaskResponseGetAuth
 import services.OnUpdateListener
 import viewModels.ItemViewModel
+import javax.xml.validation.Validator
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,6 +52,12 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //Termina aplicação se não exitir a ligação wifi
+        if(!InternetValidator.checkInternetConnection(this)){
+            InternetValidator.showErrorMessage(this, R.string.connectionError)
+            return
+        }
 
         itemViewModel = ViewModelProviders.of(this).get(ItemViewModel::class.java)
         itemsTask = AsyncTaskResponseGet()
@@ -79,9 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     fun updateUiView() {
         waitLayout.visibility = View.GONE
-
         itemsRecyclerView.layoutManager = LinearLayoutManager(this)
-
         itemsRecyclerView.adapter = ItemsAdapter(items, this)
     }
 
@@ -171,4 +181,5 @@ class MainActivity : AppCompatActivity() {
         intent.putExtras(bundle)
         startActivity(intent)
     }
+
 }

@@ -3,6 +3,7 @@
     package="com.example.myrestaurantapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -12,9 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.MyProfileActivity"></activity>
-        <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.MyProfileActivity"
+            android:configChanges="orientation|screenSize"></activity>
+        <activity android:name=".ui.LoginActivity" android:configChanges="orientation|screenSize" />
+        <activity android:name=".ui.MainActivity" android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

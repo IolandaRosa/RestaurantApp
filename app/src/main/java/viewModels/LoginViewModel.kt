@@ -2,8 +2,12 @@ package viewModels
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import com.example.myrestaurantapp.models.UnauthorizedAcess
 import com.example.myrestaurantapp.models.User
+import com.example.myrestaurantapp.ui.LoginActivity
 import org.json.JSONObject
 import repositorys.Repository
 
@@ -38,4 +42,35 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     fun setUserInfo(jsonResponse: String, token: String): User? {
         return loginRepository?.setUserInfo(jsonResponse, token)
     }
+
+    fun showErrorToast(context: Context, msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+    }
+
+    fun handleUnauthorizedAccess(context: Context, username:String) {
+        //Escrever informação no log
+        Log.v(LoginActivity.UNAUTHORIZED, "Acesso não autorizado de utilizador - password inválida")
+
+        //Atualizar nas sharedPreferences acesso indevido
+        loginRepository?.saveUnauthorizedAccessInfo(context, username)
+
+        //verificar se foram feitas 5 tentativas em menos de 10 min
+        val accessInfo = loginRepository?.getUnauthorizedAccessInfo(context, username)
+
+        if (accessInfo != null && accessInfo.count >= 5) {
+
+            var timeDiff = accessInfo.timeFinal - accessInfo.timeInit
+
+            timeDiff = (timeDiff / 1000 / 60)
+
+            if (timeDiff <= 10) {
+                //Enviar para o servidor info do log
+                Log.d(LoginActivity.UNAUTHORIZED, "send server")
+            }
+
+            loginRepository?.resetUnauthorizedAccessAttempts(context, username)
+        }
+    }
+
+
 }

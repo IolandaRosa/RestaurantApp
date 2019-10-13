@@ -13,3 +13,9 @@ data class User(
     var shiftActive: Boolean = false,
     var token: String = ""
 ) : Serializable
+
+data class UnauthorizedAcess(
+    var count: Int = 0,
+    var timeInit: Long = System.currentTimeMillis(),
+    var timeFinal: Long = System.currentTimeMillis()
+)

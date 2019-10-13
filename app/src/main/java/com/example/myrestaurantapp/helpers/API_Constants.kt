@@ -1,5 +1,7 @@
 package com.example.myrestaurantapp.helpers
 
+import java.lang.StringBuilder
+
 object APIConstants {
     private const val baseUrlAPI: String = "https://projetociberseguranca.azurewebsites.net/api/"
     private const val baseUrlImages: String = "https://projetociberseguranca.azurewebsites.net/storage/"
@@ -10,4 +12,5 @@ object APIConstants {
     const val postLoginEmail: String = baseUrlAPI+"login"
     const val getUserMe: String = baseUrlAPI+"users/me"
     const val logoutUrl: String = baseUrlAPI+"logout"
+    const val unauthorizedResult:String = "Unauthorized"
 }

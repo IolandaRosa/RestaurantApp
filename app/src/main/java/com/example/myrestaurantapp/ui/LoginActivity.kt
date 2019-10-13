@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.myrestaurantapp.R
 import com.example.myrestaurantapp.helpers.APIConstants
 import com.example.myrestaurantapp.models.User
+import org.json.JSONObject
 import services.AsyncTaskLoginPost
 import services.AsyncTaskResponseGetAuth
 import services.OnUpdateListener
@@ -23,6 +24,7 @@ class LoginActivity : AppCompatActivity() {
         const val LOGIN_POST_URL_EMAIL = APIConstants.postLoginEmail
         const val TAG = "LoginActivity"
         const val GET_USER_USER = APIConstants.getUserMe
+        const val UNAUTHORIZED = APIConstants.unauthorizedResult
     }
 
     private lateinit var usernameTextView: EditText
@@ -55,20 +57,27 @@ class LoginActivity : AppCompatActivity() {
             if (jsonObject != null) {
                 loginTask = AsyncTaskLoginPost(jsonObject)
 
-                performLogin()
+                performLogin(jsonObject)
 
             }
         }
     }
 
-    private fun performLogin() {
+    private fun performLogin(jsonObject: JSONObject) {
 
         loginTask.setUpdateListener(object : OnUpdateListener {
             override fun onUpdate(jsonResponse: String) {
 
+                //Quando a resposta vem vazia é porque algo correu mal ou houve excepção do lado do servidor
                 if (jsonResponse.isEmpty()) {
-                    Toast.makeText(this@LoginActivity, "Invalid Credentials", Toast.LENGTH_LONG)
-                        .show()
+                    loginViewModel.showErrorToast(this@LoginActivity,"Invalid Credentials")
+                    return
+                }
+                //Se a resposta for do tipo não autorizado
+                else if(jsonResponse == UNAUTHORIZED){
+                    loginViewModel.showErrorToast(this@LoginActivity,"Unauthorized Access")
+
+                    loginViewModel.handleUnauthorizedAccess(this@LoginActivity, jsonObject.getString("username"))
                     return
                 }
 
