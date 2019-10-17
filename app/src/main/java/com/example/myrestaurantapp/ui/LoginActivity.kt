@@ -80,7 +80,7 @@ class LoginActivity : AppCompatActivity() {
                 else if (jsonResponse == UNAUTHORIZED) {
                     loginViewModel.showErrorToast(this@LoginActivity, "Unauthorized Access")
 
-                    val file = loginViewModel.handleUnauthorizedAccess(
+                    /*val file = loginViewModel.handleUnauthorizedAccess(
                         this@LoginActivity,
                         jsonObject.getString("username")
                     )
@@ -90,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
                         unauthorizedTask = AsyncTaskLogUnauthorizedPost(file)
                         sendToServer()
 
-                    }
+                    }*/
                     return
                 }
 
