@@ -136,19 +136,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateMenuInfo() {
-
-        if (user != null) {
-            //index do login
-            menu.getItem(1).isVisible = false
-            //My profile
-            menu.getItem(2).isVisible = true
-            //logout
-            menu.getItem(3).isVisible = true
-        } else {
-            menu.getItem(1).isVisible = true
-            menu.getItem(2).isVisible = false
-            menu.getItem(3).isVisible = false
-        }
+        //index do login
+        menu.getItem(1).isVisible = (user==null)
+        //My profile
+        menu.getItem(2).isVisible = (user!=null)
+        //logout
+        menu.getItem(3).isVisible = (user!=null)
 
     }
 
