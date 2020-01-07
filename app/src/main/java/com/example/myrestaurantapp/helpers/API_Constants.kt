@@ -1,9 +1,9 @@
 package com.example.myrestaurantapp.helpers
 
 object APIConstants {
-    private const val baseUrlAPI: String = "http://cyberproject.xyz/api/"
+    private const val baseUrlAPI: String = "https://cyberproject.xyz/api/"
     //private const val baseUrlAPI: String = "http://e51ff16f.ngrok.io/api/"
-    private const val baseUrlImages: String = "http://cyberproject.xyz/storage/"
+    private const val baseUrlImages: String = "https://cyberproject.xyz/storage/"
     //private const val baseUrlImages: String = "http://e51ff16f.ngrok.io/storage/"
     const val getItemsURL: String = baseUrlAPI + "items"
     const val imageItemURL: String = baseUrlImages + "items/"
